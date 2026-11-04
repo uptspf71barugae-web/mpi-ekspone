@@ -1,0 +1,1802 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Media Pembelajaran Interaktif Kelas 1 SD - AWAS KUMAN!</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Fredoka & Nunito -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Three.js CDN for 3D Germ Visualizer -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        skyCyan: '#00C9FF',
+                        skyBlueDark: '#0085FF',
+                        limeMint: '#00E676',
+                        mintDark: '#05B85C',
+                        brightCoral: '#FF5252',
+                        amberWarm: '#FFB800',
+                        bubblePurple: '#9C27B0',
+                        softBackground: '#EEF6FF'
+                    },
+                    fontFamily: {
+                        fredoka: ['Fredoka', 'sans-serif'],
+                        nunito: ['Nunito', 'sans-serif']
+                    },
+                    boxShadow: {
+                        'bubble': '0 10px 25px -5px rgba(0, 165, 255, 0.25), inset 0 3px 6px rgba(255, 255, 255, 0.9)',
+                        'bubble-green': '0 10px 25px -5px rgba(0, 230, 118, 0.3), inset 0 3px 6px rgba(255, 255, 255, 0.9)',
+                        'tactile': '0 8px 0 0 rgba(0, 0, 0, 0.15)',
+                        'glass': '0 12px 32px 0 rgba(31, 38, 135, 0.1)'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Optimasi Tampilan IFB Hisense (4K / Full HD Interactive Display) */
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #EBF5FF 0%, #E8FAF0 50%, #FFF3EE 100%);
+            color: #0F172A;
+            user-select: none;
+            overflow-x: hidden;
+            touch-action: manipulation;
+        }
+
+        h1, h2, h3, h4, .font-fun {
+            font-family: 'Fredoka', cursive, sans-serif;
+        }
+
+        /* Card Khusus IFB Kontras Tinggi & Anti-Glare Visual */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 3px solid rgba(255, 255, 255, 1);
+            border-radius: 24px;
+        }
+
+        .glass-card-accent {
+            background: linear-gradient(135deg, rgba(255,255,255,1) 0%, rgba(238,246,255,0.98) 100%);
+            backdrop-filter: blur(20px);
+            border: 4px solid #FFFFFF;
+            box-shadow: 0 16px 36px -10px rgba(0, 133, 255, 0.18);
+        }
+
+        /* Tombol Ekstra Besar Khusus Touch Jari / Stylus Pen Hisense */
+        .btn-3d {
+            transition: all 0.12s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            top: 0;
+            min-height: 52px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-3d:active {
+            top: 4px;
+            box-shadow: 0 2px 0 0 rgba(0, 0, 0, 0.15) !important;
+            transform: scale(0.97);
+        }
+
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        .animate-float {
+            animation: floatSlow 3.5s ease-in-out infinite;
+        }
+
+        canvas {
+            touch-action: none;
+        }
+
+        /* Custom Scrollbar IFB */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.05);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #0085FF;
+            border-radius: 10px;
+        }
+
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white !important; color: black !important; }
+            .section-page { display: block !important; page-break-after: always; }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <!-- FLOATING QUICK SIDEBAR UTAMA KHUSUS HISENSE IFB (KIRI & KANAN) -->
+    <div class="fixed left-2 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-3 no-print">
+        <button onclick="prevSection()" title="Ke Bagian Sebelumnya" class="w-14 h-14 bg-white/90 hover:bg-skyBlueDark text-skyBlueDark hover:text-white rounded-2xl shadow-xl border-2 border-skyCyan flex items-center justify-center text-2xl transition btn-3d">
+            <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <button onclick="pickRandomStudent()" title="Acak Siswa IFB" class="w-14 h-14 bg-bubblePurple text-white rounded-2xl shadow-xl border-2 border-purple-300 flex items-center justify-center text-2xl transition btn-3d">
+            <i class="fa-solid fa-dice"></i>
+        </button>
+    </div>
+
+    <div class="fixed right-2 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-3 no-print">
+        <button onclick="nextSection()" title="Ke Bagian Berikutnya" class="w-14 h-14 bg-skyBlueDark text-white rounded-2xl shadow-xl border-2 border-white flex items-center justify-center text-2xl transition btn-3d">
+            <i class="fa-solid fa-chevron-right"></i>
+        </button>
+        <button onclick="toggleAudioMute()" title="Kontrol Suara IFB" class="w-14 h-14 bg-teal-400 text-slate-900 rounded-2xl shadow-xl border-2 border-white flex items-center justify-center text-2xl transition btn-3d">
+            <i class="fa-solid fa-volume-high" id="side-audio-icon"></i>
+        </button>
+    </div>
+
+    <!-- Trigger Zone Header -->
+    <div class="fixed top-0 left-0 right-0 h-3 z-50 no-print" onmouseenter="showHeader()"></div>
+
+    <!-- AUTO-HIDE HEADER (DIOPTIMALKAN UNTUK IFB) -->
+    <header id="auto-header" class="bg-gradient-to-r from-sky-400 via-teal-300 to-emerald-300 text-slate-800 border-b-4 border-white px-5 py-2.5 fixed top-0 left-0 right-0 z-40 shadow-xl flex items-center justify-between transition-transform duration-300 transform translate-y-0 no-print" onmouseleave="scheduleHideHeader()">
+        <div class="flex items-center gap-3">
+            <div class="bg-white/90 text-sky-600 p-2 rounded-2xl shadow-sm flex items-center justify-center">
+                <i class="fa-solid fa-virus-covid text-xl"></i>
+            </div>
+            <div class="flex items-center gap-2">
+                <h1 class="text-xl md:text-2xl font-black text-slate-900 tracking-tight leading-none drop-shadow-sm">AWAS KUMAN! 🦠</h1>
+                <span class="hidden sm:inline bg-amber-300 text-slate-900 text-xs font-black px-2.5 py-1 rounded-full uppercase tracking-wider shadow-sm border border-amber-200">
+                    IFB Hisense Edition • Kelas 1 SD
+                </span>
+            </div>
+        </div>
+
+        <div class="hidden lg:flex items-center gap-3 bg-white/90 backdrop-blur-sm px-4 py-1.5 rounded-2xl border-2 border-white shadow-sm">
+            <i class="fa-solid fa-tv text-sky-600 text-sm"></i>
+            <span id="current-section-label" class="font-extrabold text-slate-800 text-sm">1. Beranda</span>
+            <div class="w-24 bg-slate-200 h-2.5 rounded-full overflow-hidden border border-slate-300">
+                <div id="progress-bar" class="bg-gradient-to-r from-sky-400 to-emerald-400 h-full w-1/8 transition-all duration-300"></div>
+            </div>
+        </div>
+
+        <!-- Right Quick Actions -->
+        <div class="flex items-center gap-2.5">
+            <button onclick="toggleAudioMute()" id="mute-audio-btn" title="Matikan/Aktifkan Suara" class="bg-teal-400 hover:bg-teal-500 text-slate-900 font-extrabold px-3.5 py-1.5 rounded-xl text-xs md:text-sm transition btn-3d shadow-sm flex items-center gap-1.5">
+                <i class="fa-solid fa-volume-high text-base" id="mute-audio-icon"></i>
+                <span class="hidden sm:inline" id="mute-audio-text">SUARA</span>
+            </button>
+            <button onclick="toggleTeacherPanel()" class="bg-purple-500 hover:bg-purple-600 text-white font-extrabold px-3.5 py-1.5 rounded-xl text-xs md:text-sm transition btn-3d shadow-sm flex items-center gap-1.5">
+                <i class="fa-solid fa-sliders text-base"></i>
+                <span class="hidden sm:inline">MODE GURU</span>
+            </button>
+            <button onclick="toggleHeaderLock()" id="lock-header-btn" title="Kunci/Buka Header" class="bg-amber-400 hover:bg-amber-500 text-slate-900 font-extrabold px-3 py-1.5 rounded-xl text-xs md:text-sm transition btn-3d shadow-sm">
+                <i class="fa-solid fa-lock text-base" id="lock-header-icon"></i>
+            </button>
+            <button onclick="toggleFullscreen()" class="bg-rose-500 hover:bg-rose-600 text-white font-extrabold px-3.5 py-1.5 rounded-xl text-xs md:text-sm transition btn-3d shadow-sm flex items-center gap-1.5">
+                <i class="fa-solid fa-expand text-base" id="fullscreen-icon"></i>
+                <span class="hidden sm:inline" id="fullscreen-text">LAYAR PENUH</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- WIDGET HITUNG MUNDUR (TIMER 10 MENIT UNTUK SEKSI 2 - 8) -->
+    <div id="section-timer-widget" class="fixed top-16 right-4 z-40 hidden no-print">
+        <div class="bg-white/95 backdrop-blur-md border-3 border-amberWarm p-2.5 rounded-2xl shadow-xl flex items-center gap-3">
+            <div class="flex items-center gap-2 bg-amber-50 px-3 py-1.5 rounded-xl border border-amber-200">
+                <i class="fa-solid fa-stopwatch text-amberWarm text-xl animate-pulse"></i>
+                <span id="timer-display" class="font-black font-mono text-xl text-slate-800">10:00</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+                <button onclick="toggleSectionTimer()" id="timer-play-btn" title="Mulai / Pause Timer" class="w-9 h-9 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-bold flex items-center justify-center shadow-sm btn-3d">
+                    <i class="fa-solid fa-play text-sm" id="timer-play-icon"></i>
+                </button>
+                <button onclick="resetSectionTimer()" title="Reset Timer 10 Menit" class="w-9 h-9 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-xl font-bold flex items-center justify-center shadow-sm btn-3d">
+                    <i class="fa-solid fa-arrow-rotate-right text-sm"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Trigger Zone Footer -->
+    <div class="fixed bottom-0 left-0 right-0 h-3 z-50 no-print" onmouseenter="showFooter()"></div>
+
+    <!-- MAIN SPA CONTAINER -->
+    <main class="flex-grow max-w-[1920px] w-full mx-auto p-3 md:p-6 relative pt-14 pb-20">
+        
+        <!-- SECTION 1: BERANDA -->
+        <section id="section-1" class="section-page">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center min-h-[calc(100vh-160px)]">
+                <div class="lg:col-span-7 space-y-5 text-center lg:text-left flex flex-col justify-center">
+                    <div class="inline-flex items-center gap-2 bg-sky-100 text-skyBlueDark px-4 py-1.5 rounded-full border border-sky-200 shadow-sm text-xs md:text-sm font-black w-fit mx-auto lg:mx-0">
+                        <i class="fa-solid fa-star text-amberWarm"></i> Media Pembelajaran Interaktif Kelas 1 SD
+                    </div>
+                    
+                    <!-- Display Banner Gambar Penuh Tanpa Judul/Teks -->
+                    <div class="relative w-full h-72 md:h-[380px] lg:h-[420px] rounded-3xl overflow-hidden shadow-glass border-4 border-white bg-cover bg-center transition-all hover:scale-[1.005]" style="background-image: url('https://i.imgur.com/YprOF2U.png');">
+                        <div class="absolute bottom-3 right-3 bg-white/90 backdrop-blur-md px-3.5 py-1.5 rounded-xl text-xs font-black text-skyBlueDark shadow-sm border border-white">
+                            ✨ AWAS KUMAN!
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons (Mulai Belajar & Tujuan Belajar) -->
+                    <div class="flex flex-wrap gap-4 justify-center lg:justify-start pt-2">
+                        <button onclick="goToSection(2)" class="bg-gradient-to-r from-skyBlueDark to-skyCyan text-white text-xl md:text-2xl font-black px-10 py-4 rounded-2xl shadow-tactile hover:brightness-110 flex items-center gap-3 transition btn-3d">
+                            <i class="fa-solid fa-circle-play text-3xl"></i> MULAI BELAJAR
+                        </button>
+                        <button onclick="showObjectiveModal()" class="bg-amberWarm hover:bg-yellow-400 text-slate-900 text-xl md:text-2xl font-black px-8 py-4 rounded-2xl shadow-tactile flex items-center gap-3 transition btn-3d">
+                            <i class="fa-solid fa-bullseye text-3xl"></i> TUJUAN BELAJAR
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right Teacher Profile Card -->
+                <div class="lg:col-span-5 flex flex-col justify-center">
+                    <div class="glass-card-accent p-6 rounded-3xl text-center space-y-4 relative overflow-hidden my-auto shadow-bubble">
+                        <span class="bg-skyBlueDark text-white text-xs font-black uppercase tracking-widest px-4 py-1.5 rounded-full shadow-sm">
+                            Pengajar & Wali Kelas 1
+                        </span>
+
+                        <div class="relative group mx-auto w-48 h-60 md:w-52 md:h-64 rounded-2xl border-4 border-dashed border-skyCyan bg-sky-50 flex flex-col items-center justify-center p-2 shadow-inner overflow-hidden">
+                            <img id="teacher-photo" src="https://i.imgur.com/JzwK818.jpeg" alt="Musnaeni, S.Pd." class="w-full h-full object-cover rounded-xl shadow-md">
+                            <label for="teacher-photo-input" class="absolute inset-0 bg-slate-900/70 opacity-0 group-hover:opacity-100 transition flex flex-col items-center justify-center text-white text-xs font-black cursor-pointer p-2 text-center">
+                                <i class="fa-solid fa-camera text-2xl mb-1 text-skyCyan"></i>
+                                Ganti Foto Asli Guru
+                            </label>
+                            <input type="file" id="teacher-photo-input" accept="image/*" class="hidden" onchange="uploadTeacherPhoto(event)">
+                        </div>
+
+                        <div>
+                            <h2 class="text-2xl md:text-3xl font-black text-slate-800">MUSNAENI, S.Pd.</h2>
+                            <p class="text-skyBlueDark font-black text-xs uppercase tracking-wide mt-1">Guru Wali Kelas 1 SD</p>
+                        </div>
+
+                        <div class="bg-sky-50 p-2.5 rounded-xl border border-sky-100 text-[11px] text-slate-600 text-center">
+                            💡 Klik area foto di atas untuk mengunggah foto guru.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: APERSEPSI -->
+        <section id="section-2" class="section-page hidden">
+            <div class="max-w-4xl mx-auto space-y-6">
+                <div class="text-center space-y-1">
+                    <span class="bg-brightCoral text-white px-3 py-0.5 rounded-full font-black text-[10px] uppercase tracking-wider">Apersepsi Awal</span>
+                    <h2 class="text-2xl md:text-4xl font-black text-slate-800">Ayo Bertanya & Berpikir! 🤔</h2>
+                    <p class="text-slate-600 font-bold text-sm">Ibu Musnaeni akan mengajak anak-anak menjawab pertanyaan berikut:</p>
+                </div>
+
+                <div class="glass-card-accent p-8 md:p-10 rounded-3xl text-center space-y-4 min-h-[220px] flex flex-col items-center justify-center relative shadow-bubble">
+                    <div id="apersepsi-question" class="text-2xl md:text-3xl font-black text-slate-800 leading-snug">
+                        "SIAPA YANG TAHU APA ITU KUMAN?"
+                    </div>
+                    <div id="apersepsi-hint" class="text-skyBlueDark font-black text-lg hidden bg-sky-50 px-5 py-1.5 rounded-xl border border-sky-200">
+                        💡 Ayo acungkan tanganmu dan jawab dengan tegas!
+                    </div>
+
+                    <!-- Kunci Jawaban Apersepsi Box -->
+                    <div id="apersepsi-answer-box" class="hidden bg-emerald-50 border-2 border-limeMint p-4 rounded-2xl text-sm font-bold text-emerald-900 shadow-sm space-y-1 mt-3">
+                        <div class="flex items-center justify-center gap-1.5 text-lime-700 font-black uppercase tracking-wider text-xs">
+                            <i class="fa-solid fa-circle-check"></i> JAWABAN & PENJELASAN GURU:
+                        </div>
+                        <p id="apersepsi-answer-text">Kuman adalah makhluk sangat kecil yang tidak terlihat oleh mata telanjang, yang bisa masuk ke tubuh kita dan membuat kita sakit!</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap items-center justify-center gap-3">
+                    <button onclick="nextApersepsiQuestion()" class="bg-skyBlueDark text-white text-base md:text-lg font-black px-5 py-3.5 rounded-2xl shadow-tactile hover:bg-blue-600 transition btn-3d flex items-center gap-2">
+                        <i class="fa-solid fa-circle-question"></i> PERTANYAAN BERIKUTNYA
+                    </button>
+                    <button onclick="toggleApersepsiAnswer()" class="bg-limeMint text-slate-900 text-base md:text-lg font-black px-5 py-3.5 rounded-2xl shadow-tactile hover:bg-emerald-400 transition btn-3d flex items-center gap-2">
+                        <i class="fa-solid fa-key"></i> TAMPILKAN JAWABAN
+                    </button>
+                    <button onclick="toggleApersepsiHint()" class="bg-amberWarm text-slate-900 text-base md:text-lg font-black px-5 py-3.5 rounded-2xl shadow-tactile hover:bg-yellow-400 transition btn-3d flex items-center gap-2">
+                        <i class="fa-solid fa-bullhorn"></i> AJAK SISWA MENJAWAB
+                    </button>
+                    <button onclick="showGermModal()" class="bg-bubblePurple text-white text-base md:text-lg font-black px-5 py-3.5 rounded-2xl shadow-tactile hover:bg-purple-700 transition btn-3d flex items-center gap-2">
+                        <i class="fa-solid fa-virus text-xl"></i> LIHAT KUMAN 3D
+                    </button>
+                </div>
+
+                <div class="glass-card p-6 rounded-3xl space-y-3 border border-sky-200">
+                    <h3 class="text-xl font-black text-slate-800 flex items-center gap-2">
+                        <i class="fa-solid fa-flag-checkered text-skyBlueDark"></i> Target Pembelajaran Hari Ini:
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                        <div class="bg-white p-3 rounded-xl border border-sky-100 shadow-sm flex items-start gap-2.5">
+                            <span class="w-7 h-7 bg-skyBlueDark text-white font-black rounded-lg flex items-center justify-center shrink-0 text-xs">1</span>
+                            <p class="text-xs font-bold text-slate-700">Memahami arti kata "KUMAN" & bahayanya.</p>
+                        </div>
+                        <div class="bg-white p-3 rounded-xl border border-sky-100 shadow-sm flex items-start gap-2.5">
+                            <span class="w-7 h-7 bg-skyBlueDark text-white font-black rounded-lg flex items-center justify-center shrink-0 text-xs">2</span>
+                            <p class="text-xs font-bold text-slate-700">Menyimak cerita "Awas Kuman!" dengan fokus.</p>
+                        </div>
+                        <div class="bg-white p-3 rounded-xl border border-sky-100 shadow-sm flex items-start gap-2.5">
+                            <span class="w-7 h-7 bg-skyBlueDark text-white font-black rounded-lg flex items-center justify-center shrink-0 text-xs">3</span>
+                            <p class="text-xs font-bold text-slate-700">Mengeja kata K - U - M - A - N.</p>
+                        </div>
+                        <div class="bg-white p-3 rounded-xl border border-sky-100 shadow-sm flex items-start gap-2.5">
+                            <span class="w-7 h-7 bg-skyBlueDark text-white font-black rounded-lg flex items-center justify-center shrink-0 text-xs">4</span>
+                            <p class="text-xs font-bold text-slate-700">Menyebutkan hewan/benda berawalan Huruf K.</p>
+                        </div>
+                        <div class="bg-white p-3 rounded-xl border border-sky-100 shadow-sm flex items-start gap-2.5">
+                            <span class="w-7 h-7 bg-skyBlueDark text-white font-black rounded-lg flex items-center justify-center shrink-0 text-xs">5</span>
+                            <p class="text-xs font-bold text-slate-700">Menyusun suku kata sederhana secara utuh.</p>
+                        </div>
+                        <div class="bg-white p-3 rounded-xl border border-sky-100 shadow-sm flex items-start gap-2.5">
+                            <span class="w-7 h-7 bg-skyBlueDark text-white font-black rounded-lg flex items-center justify-center shrink-0 text-xs">6</span>
+                            <p class="text-xs font-bold text-slate-700">Menggambar dan mewarnai tema kebersihan & huruf K.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: VIDEO CERITA & JAWABAN LENGKAP -->
+        <section id="section-3" class="section-page hidden">
+            <div class="max-w-3xl mx-auto space-y-4">
+                <div class="text-center space-y-1">
+                    <span class="bg-skyBlueDark text-white px-3 py-0.5 rounded-full font-black text-xs uppercase tracking-wider">Menyimak Video Cerita</span>
+                    <h2 class="text-2xl md:text-4xl font-black text-slate-800">AYO FOKUS DAN MENYIMAK! 🎬</h2>
+                    <p class="text-slate-600 font-bold text-sm">Tekan tombol merah di bawah untuk menonton video pembelajaran "Awas Kuman!" bersama Ibu Musnaeni!</p>
+                </div>
+
+                <!-- Gambar Ilustrasi & Tombol Utama Youtube Sebagai Akses Video -->
+                <div class="text-center space-y-4 py-2">
+                    <!-- Gambar Ilustrasi Di Atas Tombol Video -->
+                    <div class="relative w-full max-w-xl mx-auto h-56 md:h-72 rounded-3xl overflow-hidden shadow-bubble border-4 border-white bg-cover bg-center transition-transform hover:scale-[1.01]" style="background-image: url('https://i.imgur.com/nzWvhEj.png');">
+                        <div class="absolute top-3 left-3 bg-white/90 backdrop-blur-md px-3.5 py-1.5 rounded-xl text-xs font-black text-skyBlueDark shadow-sm border border-white flex items-center gap-1.5">
+                            <i class="fa-solid fa-film text-amberWarm"></i> Ilustrasi Video "Awas Kuman!"
+                        </div>
+                    </div>
+
+                    <!-- Tombol Akses YouTube -->
+                    <a href="https://youtu.be/PP1CabaJOMg?si=NjhzR5CojOY8ZOv7" target="_blank" class="inline-flex items-center gap-3 bg-brightCoral hover:bg-red-600 text-white font-black px-8 py-4 md:py-5 rounded-3xl text-xl md:text-2xl shadow-tactile transition btn-3d border-4 border-white">
+                        <i class="fa-brands fa-youtube text-3xl md:text-4xl"></i> TONTON VIDEO "AWAS KUMAN!" DI YOUTUBE
+                    </a>
+                </div>
+
+                <div class="glass-card p-4 rounded-2xl border-2 border-amberWarm bg-amber-50/60 shadow-md space-y-3">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-xl bg-amberWarm text-slate-900 flex items-center justify-center font-black text-base shadow-sm">
+                            <i class="fa-solid fa-comments"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-base font-black text-slate-800">Ayo Jelaskan Apa yang Kamu Pahami! 🗣️</h3>
+                            <p class="text-xs font-bold text-slate-600">Ibu Musnaeni akan bertanya kepada siswa tentang isi video.</p>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Reflection Box (Pertanyaan Pemahaman) -->
+                    <div id="video-reflection-box" class="bg-white p-3 rounded-xl border border-amber-200 text-sm font-black text-slate-800 shadow-inner flex items-start gap-2">
+                        <span class="text-xl shrink-0">❓</span>
+                        <span id="video-prompt-text">"Anak-anak, cerita tentang apa video yang baru saja kita tonton bersama?"</span>
+                    </div>
+
+                    <!-- Kunci Jawaban Card Box -->
+                    <div id="video-answer-box" class="hidden bg-emerald-50 border-2 border-limeMint p-3 rounded-xl text-xs font-bold text-emerald-900 shadow-sm space-y-1 animate-pulse">
+                        <div class="flex items-center gap-1.5 text-lime-700 font-black uppercase tracking-wider text-[11px]">
+                            <i class="fa-solid fa-circle-check"></i> KUNCI JAWABAN (PENJELASAN GURU):
+                        </div>
+                        <p id="video-answer-text">Video ini menceritakan tentang kuman yang sangat kecil dan bisa membuat kita sakit perut atau batuk jika tidak menjaga kebersihan.</p>
+                    </div>
+
+                    <!-- Action Controls for Teacher (Semua tombol aksi dalam satu baris sejajar) -->
+                    <div class="flex flex-wrap items-center justify-center gap-2 pt-2 border-t border-amber-200/60">
+                        <button onclick="nextVideoPrompt()" class="bg-amberWarm hover:bg-yellow-400 text-slate-900 font-black px-3.5 py-2 rounded-xl text-xs shadow-tactile transition btn-3d flex items-center gap-1.5">
+                            <i class="fa-solid fa-lightbulb"></i> PERTANYAAN LAINNYA
+                        </button>
+                        <button onclick="toggleVideoAnswer()" class="bg-limeMint hover:bg-emerald-400 text-slate-900 font-black px-3.5 py-2 rounded-xl text-xs shadow-tactile transition btn-3d flex items-center gap-1.5">
+                            <i class="fa-solid fa-key"></i> TAMPILKAN JAWABAN
+                        </button>
+                        <button onclick="pickRandomStudent()" class="bg-bubblePurple hover:bg-purple-700 text-white font-black px-3.5 py-2 rounded-xl text-xs shadow-tactile transition btn-3d flex items-center gap-1.5">
+                            <i class="fa-solid fa-dice"></i> GILIRAN SISWA
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: EJA KUMAN & PANDUAN MENULIS -->
+        <section id="section-4" class="section-page hidden">
+            <div class="max-w-3xl mx-auto space-y-4">
+                <div class="text-center space-y-0.5">
+                    <span class="bg-bubblePurple text-white px-2.5 py-0.5 rounded-full font-black text-[10px] uppercase tracking-wider">Mindful Learning</span>
+                    <h2 class="text-xl md:text-3xl font-black text-slate-800">Mengenal Kata "KUMAN" 🔤</h2>
+                    <p class="text-slate-600 font-bold text-xs">Klik setiap kartu huruf untuk mendengarkan bunyinya!</p>
+                </div>
+
+                <div class="grid grid-cols-5 gap-2 md:gap-3 my-3">
+                    <div onclick="speakLetter('K')" class="glass-card cursor-pointer p-3 md:p-5 text-center shadow-bubble hover:scale-105 transition border-2 border-skyCyan flex items-center justify-center btn-3d">
+                        <span class="text-3xl md:text-5xl font-black text-skyBlueDark">K</span>
+                    </div>
+                    <div onclick="speakLetter('U')" class="glass-card cursor-pointer p-3 md:p-5 text-center shadow-bubble hover:scale-105 transition border-2 border-skyCyan flex items-center justify-center btn-3d">
+                        <span class="text-3xl md:text-5xl font-black text-skyBlueDark">U</span>
+                    </div>
+                    <div onclick="speakLetter('M')" class="glass-card cursor-pointer p-3 md:p-5 text-center shadow-bubble hover:scale-105 transition border-2 border-skyCyan flex items-center justify-center btn-3d">
+                        <span class="text-3xl md:text-5xl font-black text-skyBlueDark">M</span>
+                    </div>
+                    <div onclick="speakLetter('A')" class="glass-card cursor-pointer p-3 md:p-5 text-center shadow-bubble hover:scale-105 transition border-2 border-skyCyan flex items-center justify-center btn-3d">
+                        <span class="text-3xl md:text-5xl font-black text-skyBlueDark">A</span>
+                    </div>
+                    <div onclick="speakLetter('N')" class="glass-card cursor-pointer p-3 md:p-5 text-center shadow-bubble hover:scale-105 transition border-2 border-skyCyan flex items-center justify-center btn-3d">
+                        <span class="text-3xl md:text-5xl font-black text-skyBlueDark">N</span>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap justify-center gap-2">
+                    <button onclick="spellTogether()" class="bg-limeMint text-slate-900 text-sm md:text-base font-black px-5 py-2.5 rounded-xl shadow-tactile hover:bg-emerald-400 flex items-center gap-2 transition btn-3d">
+                        <i class="fa-solid fa-volume-high text-lg"></i> EJA BERSAMA (K-U-M-A-N)
+                    </button>
+                    <button onclick="openWritingGuide()" class="bg-amberWarm text-slate-900 text-sm md:text-base font-black px-5 py-2.5 rounded-xl shadow-tactile hover:bg-yellow-400 flex items-center gap-2 transition btn-3d">
+                        <i class="fa-solid fa-pen-ruler text-lg"></i> LATIH MENULIS
+                    </button>
+                </div>
+
+                <div id="writing-guide-box" class="glass-card p-4 rounded-2xl border-2 border-purple-200 hidden space-y-2">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-sm md:text-base font-black text-slate-800">✏️ Area Latih Menulis Kata "KUMAN"</h3>
+                        <div class="flex items-center gap-2">
+                            <button onclick="toggleWritingTemplate()" class="bg-amber-200 hover:bg-amber-300 text-slate-800 font-black px-3 py-1 rounded-xl text-xs btn-3d">
+                                <i class="fa-solid fa-eye"></i> Togel Panduan
+                            </button>
+                            <button onclick="clearWritingCanvasOnly()" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-black px-3 py-1 rounded-xl text-xs btn-3d">
+                                <i class="fa-solid fa-eraser"></i> Bersihkan Tulisan
+                            </button>
+                        </div>
+                    </div>
+                    <p class="text-slate-600 font-bold text-[11px]">Tulis/tebali tulisan KUMAN di bawah menggunakan jari atau Stylus Pen!</p>
+                    
+                    <!-- Interactive Trace & Write Canvas/Box -->
+                    <div id="writing-canvas-container" class="relative w-full h-28 bg-sky-50 border-y-4 border-dashed border-sky-300 rounded-xl flex items-center justify-center shadow-inner overflow-hidden select-none">
+                        <span id="writing-template-text" class="font-mono text-4xl md:text-6xl font-black tracking-widest text-slate-400 opacity-60 pointer-events-none">
+                            K U M A N
+                        </span>
+                        <canvas id="writing-stylus-canvas" class="absolute inset-0 w-full h-full touch-none z-10"></canvas>
+                        <div id="click-to-write-hint" class="absolute bottom-2 right-3 bg-amberWarm text-slate-900 text-[10px] font-black px-2.5 py-1 rounded-lg shadow-sm pointer-events-none">
+                            ✏️ Tulis / Tebali Teks di Atas
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: KUIS TEBAK KATA -->
+        <section id="section-5" class="section-page hidden">
+            <div class="max-w-4xl mx-auto space-y-5">
+                <div class="glass-card-accent p-5 rounded-3xl flex flex-col sm:flex-row items-center justify-between gap-3 shadow-bubble">
+                    <div>
+                        <span class="bg-limeMint text-slate-900 px-2.5 py-0.5 rounded-full font-black text-[10px] uppercase tracking-wider">Joyful Quiz</span>
+                        <h2 class="text-xl md:text-3xl font-black text-slate-800">PETUALANGAN HURUF K 🐾</h2>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="bg-amberWarm px-5 py-1.5 rounded-xl border border-yellow-500 text-center shadow-inner">
+                            <span class="text-[10px] font-black text-slate-900 block">SKOR KELAS</span>
+                            <span id="quiz-score" class="text-2xl font-black text-slate-900">0</span>
+                        </div>
+                        <button onclick="resetQuizGame()" class="bg-slate-200 hover:bg-slate-300 text-slate-800 p-2 rounded-xl text-xs font-black btn-3d">
+                            <i class="fa-solid fa-rotate-left"></i> Reset
+                        </button>
+                    </div>
+                </div>
+
+                <div class="glass-card p-6 rounded-3xl text-center space-y-5 shadow-lg border-2 border-skyCyan">
+                    <div id="quiz-question-number" class="text-skyBlueDark font-black text-sm">Soal 1 dari 8</div>
+                    <div id="quiz-question-text" class="text-xl md:text-3xl font-black text-slate-800">
+                        "HEWAN APA YANG SUKA MEONG?"
+                    </div>
+
+                    <div id="quiz-options-container" class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2">
+                        <!-- Options Dynamically Inserted -->
+                    </div>
+                </div>
+
+                <div id="quiz-feedback" class="hidden text-center text-xl font-black p-3 rounded-xl"></div>
+
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                    <button onclick="pickRandomStudent()" class="bg-bubblePurple text-white font-black px-5 py-3 rounded-xl shadow-tactile hover:bg-purple-700 btn-3d text-sm">
+                        <i class="fa-solid fa-dice"></i> GILIRAN SISWA
+                    </button>
+                    <div class="flex items-center gap-2">
+                        <button onclick="revealQuizAnswer()" class="bg-amberWarm text-slate-900 font-black px-5 py-3 rounded-xl shadow-tactile hover:bg-yellow-400 btn-3d text-sm">
+                            <i class="fa-solid fa-eye"></i> KUNCI JAWABAN
+                        </button>
+                        <button onclick="nextQuizQuestion()" class="bg-skyBlueDark text-white font-black px-6 py-3 rounded-xl shadow-tactile hover:bg-blue-600 btn-3d text-sm">
+                            SOAL BERIKUTNYA <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 6: GAME SUKU KATA -->
+        <section id="section-6" class="section-page hidden">
+            <div class="max-w-4xl mx-auto space-y-5">
+                <div class="text-center space-y-1">
+                    <span class="bg-brightCoral text-white px-3 py-0.5 rounded-full font-black text-[10px] uppercase tracking-wider">Permainan Suku Kata</span>
+                    <h2 class="text-2xl md:text-4xl font-black text-slate-800">AYO SUSUN SUKU KATA! 🧩</h2>
+                    <p class="text-slate-600 font-bold text-sm">Klik suku kata di bawah untuk memasukkannya ke kotak kata!</p>
+                </div>
+
+                <div class="glass-card p-6 rounded-3xl space-y-5 border-2 border-limeMint shadow-lg">
+                    <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
+                        <div class="w-36 h-36 bg-sky-100 rounded-2xl border-2 border-skyCyan flex items-center justify-center overflow-hidden shrink-0 shadow-inner">
+                            <img id="syllable-image" src="https://placehold.co/300x300/00C9FF/FFFFFF?text=KUCING" alt="Gambar Suku Kata" class="w-full h-full object-cover">
+                        </div>
+                        <div class="space-y-3 text-center sm:text-left">
+                            <h3 id="syllable-target-label" class="text-2xl font-black text-slate-800">Susun Kata: KUCING</h3>
+                            
+                            <!-- Input Slot Area -->
+                            <div id="syllable-slots" class="flex items-center justify-center sm:justify-start gap-2 min-h-[50px]">
+                                <!-- Slots generated via JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Available Syllable Buttons -->
+                    <div class="border-t border-slate-200 pt-4 text-center space-y-2">
+                        <p class="text-xs font-black text-slate-500 uppercase tracking-wider">PILIHAN SUKU KATA:</p>
+                        <div id="syllable-options" class="flex flex-wrap justify-center gap-3">
+                            <!-- Syllable options generated via JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <div id="syllable-feedback" class="hidden text-center text-lg font-black p-3 rounded-xl"></div>
+
+                <div class="flex flex-wrap justify-between items-center gap-3">
+                    <button onclick="clearSyllables()" class="bg-slate-200 text-slate-800 font-black px-5 py-3 rounded-xl btn-3d text-sm">
+                        <i class="fa-solid fa-eraser"></i> HAPUS ISIAN
+                    </button>
+                    <button onclick="nextSyllableWord()" class="bg-skyBlueDark text-white font-black px-6 py-3 rounded-xl shadow-tactile hover:bg-blue-600 btn-3d text-sm">
+                        KATA BERIKUTNYA <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 7: PRAKTEK MENGGAMBAR & MEWARNAI -->
+        <section id="section-7" class="section-page hidden">
+            <div class="max-w-5xl mx-auto space-y-5">
+                <div class="text-center space-y-1">
+                    <span class="bg-amberWarm text-slate-900 px-3 py-0.5 rounded-full font-black text-[10px] uppercase tracking-wider">Kreativitas Siswa</span>
+                    <h2 class="text-2xl md:text-4xl font-black text-slate-800">AYO MENGGAMBAR & MEWARNAI! 🎨</h2>
+                    <p class="text-slate-600 font-bold text-sm md:text-base">Gambarkan atau warnai pola hewan & benda berawalan <b>Huruf 'K'</b> di bawah ini!</p>
+                </div>
+
+                <!-- PILIHAN CONTOH POLA GAMBAR HITAM-PUTIH (2 HEWAN + 2 BENDA HURUF K) -->
+                <div class="glass-card p-4 rounded-2xl border-2 border-skyCyan bg-sky-50/70 shadow-sm space-y-2">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-lightbulb text-amberWarm text-lg"></i>
+                        <h3 class="text-sm font-black text-slate-800">CONTOH POLA GAMBAR HITAM-PUTIH (PILIH UNTUK MEWARNAI):</h3>
+                    </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <!-- 1. HEWAN: KUCING -->
+                        <button onclick="loadTemplateToCanvas('kucing')" class="bg-white hover:bg-amber-100 border-2 border-slate-300 hover:border-amberWarm p-2 rounded-2xl text-center shadow-sm transition btn-3d flex flex-col items-center gap-1">
+                            <svg class="w-16 h-16 text-slate-800" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                                <!-- Line art Kucing -->
+                                <path d="M 30,35 L 20,15 L 42,28 Z" fill="none" />
+                                <path d="M 70,35 L 80,15 L 58,28 Z" fill="none" />
+                                <circle cx="50" cy="50" r="28" fill="none" />
+                                <circle cx="38" cy="45" r="3" fill="currentColor" />
+                                <circle cx="62" cy="45" r="3" fill="currentColor" />
+                                <polygon points="50,53 45,58 55,58" fill="currentColor" />
+                                <path d="M 50,58 Q 42,65 38,60" fill="none" />
+                                <path d="M 50,58 Q 58,65 62,60" fill="none" />
+                                <line x1="20" y1="52" x2="35" y2="52" />
+                                <line x1="18" y1="58" x2="35" y2="56" />
+                                <line x1="80" y1="52" x2="65" y2="52" />
+                                <line x1="82" y1="58" x2="65" y2="56" />
+                            </svg>
+                            <span class="text-xs font-black text-slate-800">1. KUCING 🐱</span>
+                        </button>
+
+                        <!-- 2. HEWAN: KATAK -->
+                        <button onclick="loadTemplateToCanvas('katak')" class="bg-white hover:bg-amber-100 border-2 border-slate-300 hover:border-amberWarm p-2 rounded-2xl text-center shadow-sm transition btn-3d flex flex-col items-center gap-1">
+                            <svg class="w-16 h-16 text-slate-800" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                                <!-- Line art Katak -->
+                                <circle cx="35" cy="30" r="12" fill="none" />
+                                <circle cx="65" cy="30" r="12" fill="none" />
+                                <circle cx="35" cy="30" r="4" fill="currentColor" />
+                                <circle cx="65" cy="30" r="4" fill="currentColor" />
+                                <ellipse cx="50" cy="55" rx="30" ry="22" fill="none" />
+                                <path d="M 35,58 Q 50,70 65,58" fill="none" />
+                                <path d="M 22,65 Q 12,75 25,82" fill="none" />
+                                <path d="M 78,65 Q 88,75 75,82" fill="none" />
+                            </svg>
+                            <span class="text-xs font-black text-slate-800">2. KATAK 🐸</span>
+                        </button>
+
+                        <!-- 3. BENDA: KIPAS -->
+                        <button onclick="loadTemplateToCanvas('kipas')" class="bg-white hover:bg-amber-100 border-2 border-slate-300 hover:border-amberWarm p-2 rounded-2xl text-center shadow-sm transition btn-3d flex flex-col items-center gap-1">
+                            <svg class="w-16 h-16 text-slate-800" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                                <!-- Line art Kipas Angin -->
+                                <circle cx="50" cy="38" r="28" fill="none" />
+                                <circle cx="50" cy="38" r="6" fill="currentColor" />
+                                <path d="M 50,32 Q 40,20 50,12 Q 60,20 50,32" fill="none" />
+                                <path d="M 50,44 Q 40,56 50,64 Q 60,56 50,44" fill="none" />
+                                <path d="M 44,38 Q 32,28 24,38 Q 32,48 44,38" fill="none" />
+                                <path d="M 56,38 Q 68,28 76,38 Q 68,48 56,38" fill="none" />
+                                <line x1="50" y1="66" x2="50" y2="88" stroke-width="4" />
+                                <path d="M 32,88 L 68,88" stroke-width="4" />
+                            </svg>
+                            <span class="text-xs font-black text-slate-800">3. KIPAS 🌀</span>
+                        </button>
+
+                        <!-- 4. BENDA: KACAMATA -->
+                        <button onclick="loadTemplateToCanvas('kacamata')" class="bg-white hover:bg-amber-100 border-2 border-slate-300 hover:border-amberWarm p-2 rounded-2xl text-center shadow-sm transition btn-3d flex flex-col items-center gap-1">
+                            <svg class="w-16 h-16 text-slate-800" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                                <!-- Line art Kacamata -->
+                                <circle cx="30" cy="50" r="18" fill="none" />
+                                <circle cx="70" cy="50" r="18" fill="none" />
+                                <path d="M 48,50 Q 50,44 52,50" stroke-width="4" fill="none" />
+                                <path d="M 12,50 Q 5,38 10,30" fill="none" />
+                                <path d="M 88,50 Q 95,38 90,30" fill="none" />
+                            </svg>
+                            <span class="text-xs font-black text-slate-800">4. KACAMATA 👓</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="glass-card p-5 rounded-3xl border-2 border-amberWarm shadow-bubble space-y-4">
+                    <!-- Drawing Controls Bar -->
+                    <div class="flex flex-wrap items-center justify-between gap-3 bg-amber-50 p-3 rounded-2xl border border-amber-200">
+                        <!-- Color Palette -->
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-black text-slate-700 hidden sm:inline">WARNA:</span>
+                            <div class="flex items-center gap-1.5">
+                                <button onclick="setDrawingColor('#1E293B')" class="w-9 h-9 rounded-xl bg-slate-800 border-2 border-white shadow-sm hover:scale-110 transition"></button>
+                                <button onclick="setDrawingColor('#FF5252')" class="w-9 h-9 rounded-xl bg-brightCoral border-2 border-white shadow-sm hover:scale-110 transition"></button>
+                                <button onclick="setDrawingColor('#0085FF')" class="w-9 h-9 rounded-xl bg-skyBlueDark border-2 border-white shadow-sm hover:scale-110 transition"></button>
+                                <button onclick="setDrawingColor('#00E676')" class="w-9 h-9 rounded-xl bg-limeMint border-2 border-white shadow-sm hover:scale-110 transition"></button>
+                                <button onclick="setDrawingColor('#FFB800')" class="w-9 h-9 rounded-xl bg-amberWarm border-2 border-white shadow-sm hover:scale-110 transition"></button>
+                                <button onclick="setDrawingColor('#9C27B0')" class="w-9 h-9 rounded-xl bg-bubblePurple border-2 border-white shadow-sm hover:scale-110 transition"></button>
+                            </div>
+                        </div>
+
+                        <!-- Brush Size & Eraser -->
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-black text-slate-700 hidden sm:inline">UKURAN:</span>
+                            <button onclick="setBrushSize(4)" class="px-3 py-1.5 bg-white border rounded-xl font-black text-xs hover:bg-amber-100">Halus</button>
+                            <button onclick="setBrushSize(10)" class="px-3 py-1.5 bg-white border rounded-xl font-black text-xs hover:bg-amber-100">Sedang</button>
+                            <button onclick="setBrushSize(22)" class="px-3 py-1.5 bg-white border rounded-xl font-black text-xs hover:bg-amber-100">Tebal</button>
+                            <button onclick="useEraser()" class="px-3 py-1.5 bg-rose-100 border border-rose-300 text-rose-800 rounded-xl font-black text-xs hover:bg-rose-200 flex items-center gap-1">
+                                <i class="fa-solid fa-eraser"></i> Penghapus
+                            </button>
+                        </div>
+
+                        <!-- Clear Canvas -->
+                        <button onclick="clearDrawCanvas()" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-black px-4 py-2 rounded-xl text-xs btn-3d">
+                            <i class="fa-solid fa-trash-can"></i> BERSIHKAN
+                        </button>
+                    </div>
+
+                    <!-- Canvas Interactive Screen IFB -->
+                    <div class="relative w-full h-80 md:h-96 bg-white rounded-2xl border-2 border-slate-300 shadow-inner overflow-hidden cursor-crosshair">
+                        <canvas id="drawing-canvas" class="w-full h-full touch-none"></canvas>
+                        <div class="absolute bottom-3 left-3 bg-white/80 backdrop-blur-sm px-3 py-1 rounded-xl text-[11px] font-black text-slate-600 shadow-sm border border-slate-200 select-none">
+                            ✏️ Gambar langsung di layar IFB menggunakan Stylus / Jari
+                        </div>
+                    </div>
+
+                    <!-- Present Picture Action Button -->
+                    <div class="flex flex-wrap items-center justify-between gap-3 pt-2">
+                        <p class="text-xs font-bold text-slate-600">
+                            💡 <b>Langkah Terakhir:</b> Setelah selesai, tekan tombol di kanan untuk memanggil siswa mempresentasikan gambarnya!
+                        </p>
+                        <button onclick="presentStudentDrawing()" class="bg-gradient-to-r from-amberWarm to-yellow-400 hover:brightness-105 text-slate-900 font-black px-6 py-3 rounded-2xl shadow-tactile transition btn-3d text-sm md:text-base flex items-center gap-2">
+                            <i class="fa-solid fa-microphone text-lg"></i> PRESENTASIKAN GAMBAR SAYA 🎤
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 8: SELESAI & REFLEKSI AKHIR -->
+        <section id="section-8" class="section-page hidden">
+            <div class="max-w-4xl mx-auto space-y-6">
+                <div class="text-center space-y-1">
+                    <span class="bg-bubblePurple text-white px-3 py-0.5 rounded-full font-black text-[10px] uppercase tracking-wider">Refleksi Akhir</span>
+                    <h2 class="text-2xl md:text-4xl font-black text-slate-800">HEBAT! KAMU PAHLAWAN SEHAT! 🏆</h2>
+                    <p class="text-slate-600 font-bold text-sm">Rangkuman pembelajaran dan apresiasi untuk seluruh anak-anak hebat!</p>
+                </div>
+
+                <div class="glass-card-accent p-6 rounded-3xl space-y-4 shadow-bubble">
+                    <h3 class="text-xl font-black text-slate-800">🌟 Rangkuman Pelajaran Hari Ini:</h3>
+                    <ul class="space-y-2 text-sm font-bold text-slate-700">
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500"></i> Kuman adalah makhluk sangat kecil yang membuat kita sakit.</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500"></i> Kita mengeja kata <b>K - U - M - A - N</b>.</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500"></i> Banyak kata diawali huruf K: Kucing, Kuda, Katak, Kelinci, Kipas.</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500"></i> Selalu cuci tangan dengan sabun dan air mengalir sebelum makan!</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500"></i> Menggambar dan mempresentasikan karya tentang kebersihan diri.</li>
+                    </ul>
+                </div>
+
+                <div class="text-center pt-2">
+                    <button onclick="window.print()" class="bg-emerald-500 hover:bg-emerald-600 text-white font-black px-8 py-4 rounded-2xl shadow-tactile btn-3d text-lg inline-flex items-center gap-2">
+                        <i class="fa-solid fa-print"></i> CETAK BINTANG PRESTASI KELAS
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- AUTO-HIDE FOOTER (NAVIGASI UTAMA DI-UPDATE DENGAN TOMBOL TUJUAN TERINTEGRASI DAN URUTAN RAPI) -->
+    <!-- AUTO-HIDE FOOTER (NAVIGASI UTAMA) -->
+    <footer id="auto-footer" class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t-2 border-sky-200 px-3 py-2 z-40 shadow-lg transition-transform duration-300 transform translate-y-0 no-print" onmouseleave="scheduleHideFooter()">
+        <div class="max-w-6xl mx-auto flex items-center justify-between gap-2">
+            <button onclick="prevSection()" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-black px-3.5 py-2 rounded-xl text-xs transition btn-3d flex items-center gap-1.5 shrink-0">
+                <i class="fa-solid fa-arrow-left"></i>
+                <span class="hidden sm:inline">KEMBALI</span>
+            </button>
+
+            <!-- Quick Dots / Steps Navigation -->
+            <div class="flex items-center gap-1.5 md:gap-2 overflow-x-auto py-1 px-2 no-scrollbar">
+                <button onclick="goToSection(1)" class="nav-dot px-3 py-1 rounded-xl text-xs font-black bg-skyBlueDark text-white shrink-0">1. Beranda</button>
+                <button onclick="goToSection(2)" class="nav-dot px-3 py-1 rounded-xl text-xs font-black bg-slate-100 text-slate-700 shrink-0">2. Tanya</button>
+                <button onclick="goToSection(3)" class="nav-dot px-3 py-1 rounded-xl text-xs font-black bg-slate-100 text-slate-700 shrink-0">3. Video</button>
+                <button onclick="goToSection(4)" class="nav-dot px-3 py-1 rounded-xl text-xs font-black bg-slate-100 text-slate-700 shrink-0">4. Eja</button>
+                <button onclick="goToSection(5)" class="nav-dot px-3 py-1 rounded-xl text-xs font-black bg-slate-100 text-slate-700 shrink-0">5. Kuis K</button>
+                <button onclick="goToSection(6)" class="nav-dot px-3 py-1 rounded-xl text-xs font-black bg-slate-100 text-slate-700 shrink-0">6. Suku Kata</button>
+                <button onclick="goToSection(7)" class="nav-dot px-3 py-1 rounded-xl text-xs font-black bg-slate-100 text-slate-700 shrink-0">7. Menggambar</button>
+                <button onclick="goToSection(8)" class="nav-dot px-3 py-1 rounded-xl text-xs font-black bg-slate-100 text-slate-700 shrink-0">8. Selesai</button>
+            </div>
+
+            <button onclick="nextSection()" class="bg-skyBlueDark hover:bg-blue-600 text-white font-black px-4 py-2 rounded-xl text-xs transition btn-3d flex items-center gap-1.5 shrink-0">
+                <span class="hidden sm:inline">LANJUT</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+    </footer>
+
+    <!-- MODAL 3D KUMAN VISUALIZER -->
+    <div id="germ-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-card max-w-md w-full p-5 rounded-3xl text-center space-y-4 border-2 border-limeMint shadow-2xl relative">
+            <button onclick="closeGermModal()" class="absolute top-3 right-3 text-slate-400 hover:text-slate-800 text-xl font-bold">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h3 class="text-2xl font-black text-slate-800">🦠 SIMULASI KUMAN 3D</h3>
+            <p class="text-xs font-bold text-slate-600">Geser atau putar dengan jarimu untuk melihat kuman lebih dekat!</p>
+            <div id="three-germ-container" class="w-full h-60 bg-slate-900 rounded-2xl overflow-hidden border border-slate-700"></div>
+            <button onclick="closeGermModal()" class="bg-limeMint text-slate-900 font-black px-6 py-2.5 rounded-xl text-sm btn-3d w-full">
+                SAYA FAHAM & TUTUP
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL RANDOM STUDENT PICKER -->
+    <div id="student-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-card max-w-sm w-full p-6 rounded-3xl text-center space-y-4 border-2 border-bubblePurple shadow-2xl">
+            <div class="w-16 h-16 bg-bubblePurple text-white rounded-2xl flex items-center justify-center mx-auto text-2xl font-black shadow-lg">
+                <i class="fa-solid fa-user-ninja"></i>
+            </div>
+            <h3 class="text-xl font-black text-slate-800">GILIRAN SISWA MENJAWAB:</h3>
+            <div id="random-student-name" class="text-3xl font-black text-bubblePurple animate-bounce py-2">
+                ...
+            </div>
+            <button onclick="closeStudentModal()" class="bg-bubblePurple text-white font-black px-6 py-2.5 rounded-xl text-sm btn-3d w-full">
+                LANTANGKAN SUARAMU! 📣
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL TUJUAN PEMBELAJARAN -->
+    <div id="objective-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-card max-w-lg w-full p-6 rounded-3xl text-left space-y-4 border-2 border-amberWarm shadow-2xl relative">
+            <button onclick="closeObjectiveModal()" class="absolute top-3 right-3 text-slate-400 hover:text-slate-800 text-xl font-bold">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h3 class="text-2xl font-black text-slate-800 flex items-center gap-2">
+                <i class="fa-solid fa-bullseye text-amberWarm"></i> Tujuan Pembelajaran Hari Ini 🎯
+            </h3>
+            
+            <div class="bg-amber-50 p-4 rounded-2xl border border-amber-200 text-slate-800 font-bold text-sm leading-relaxed space-y-2">
+                <p class="text-amber-900 font-black flex items-center gap-1.5">
+                    <i class="fa-solid fa-chalkboard-user"></i> Penjelasan Guru:
+                </p>
+                <p class="text-slate-700 text-xs md:text-sm">
+                    Guru menjelaskan tujuan pembelajaran hari ini, yaitu:
+                </p>
+                <ul class="space-y-2 pt-1 text-xs md:text-sm">
+                    <li class="flex items-start gap-2">
+                        <span class="w-5 h-5 bg-amberWarm text-slate-900 font-black rounded-full flex items-center justify-center shrink-0 text-xs">1</span>
+                        <span>Mengenal cerita tentang kebersihan.</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="w-5 h-5 bg-amberWarm text-slate-900 font-black rounded-full flex items-center justify-center shrink-0 text-xs">2</span>
+                        <span>Memahami kata <b>‘kuman’</b>.</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="w-5 h-5 bg-amberWarm text-slate-900 font-black rounded-full flex items-center justify-center shrink-0 text-xs">3</span>
+                        <span>Menyebutkan kata serta binatang yang diawali dengan <b>huruf ‘k’</b>.</span>
+                    </li>
+                </ul>
+            </div>
+
+            <button onclick="closeObjectiveModal()" class="bg-amberWarm hover:bg-yellow-400 text-slate-900 font-black px-6 py-3 rounded-2xl text-sm btn-3d w-full shadow-tactile transition">
+                SIAP BELAJAR! 👍
+            </button>
+        </div>
+    </div>
+
+    <!-- TEACHER MODE PANEL -->
+    <div id="teacher-panel" class="fixed inset-y-0 right-0 w-80 bg-white/95 backdrop-blur-xl shadow-2xl border-l-2 border-purple-200 z-50 transform translate-x-full transition-transform duration-300 p-5 space-y-5 overflow-y-auto">
+        <div class="flex items-center justify-between border-b pb-3">
+            <h3 class="text-lg font-black text-purple-900"><i class="fa-solid fa-sliders"></i> PANEL KONTROL GURU</h3>
+            <button onclick="toggleTeacherPanel()" class="text-slate-400 hover:text-slate-800 font-bold">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+        </div>
+
+        <div class="space-y-3 text-xs font-bold text-slate-700">
+            <div>
+                <label class="block mb-1 font-black">NAMA GURU WALI KELAS:</label>
+                <input type="text" id="teacher-name-input" value="Musnaeni, S.Pd." onchange="updateTeacherName(this.value)" class="w-full px-3 py-2 border rounded-xl font-bold text-slate-800">
+            </div>
+
+            <div>
+                <label class="block mb-1 font-black">DAFTAR NAMA SISWA (PISAH DENGAN KOMA):</label>
+                <textarea id="student-list-input" rows="4" onchange="updateStudentList(this.value)" class="w-full px-3 py-2 border rounded-xl font-bold text-slate-800">Ahmad, Budi, Citra, Doni, Eka, Fani, Gilang, Hana, Inas, Joko</textarea>
+            </div>
+
+            <div class="pt-2 border-t">
+                <button onclick="resetAllProgress()" class="bg-rose-500 text-white font-black px-4 py-2 rounded-xl w-full btn-3d">
+                    <i class="fa-solid fa-trash-can"></i> RESET SEMUA PROGRESS
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- AUDIO SYNTHESIS & SCRIPT LOGIC (OPTIMASI IFB HISENSE & DRAWING CANVAS) -->
+    <script>
+        let currentSection = 1;
+        const totalSections = 8;
+        let isAudioMuted = false;
+        let isHeaderLocked = false;
+        let headerTimer = null;
+        let footerTimer = null;
+        let studentList = ["Ahmad", "Budi", "Citra", "Doni", "Eka", "Fani", "Gilang", "Hana", "Inas", "Joko"];
+
+        // TIMER 10 MENIT PER SEKSI (SEKSI 2 SAMPAI 8)
+        let timerInterval = null;
+        let timerSeconds = 600; // 10 menit = 600 detik
+        let isTimerRunning = false;
+
+        // FUNGSI TOGGLE FULLSCREEN (IFB HISENSE)
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().then(() => {
+                    document.getElementById('fullscreen-text').innerText = "KELUAR";
+                    document.getElementById('fullscreen-icon').className = "fa-solid fa-compress text-base";
+                }).catch(err => console.log(err));
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen().then(() => {
+                        document.getElementById('fullscreen-text').innerText = "LAYAR PENUH";
+                        document.getElementById('fullscreen-icon').className = "fa-solid fa-expand text-base";
+                    }).catch(err => console.log(err));
+                }
+            }
+        }
+
+        // FUNGSI TOGGLE MUTE / UNMUTE AUDIO
+        function toggleAudioMute() {
+            isAudioMuted = !isAudioMuted;
+            const muteIcon = document.getElementById('mute-audio-icon');
+            const sideIcon = document.getElementById('side-audio-icon');
+            const muteText = document.getElementById('mute-audio-text');
+
+            if (isAudioMuted) {
+                if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+                if (muteIcon) muteIcon.className = "fa-solid fa-volume-xmark text-base text-rose-500";
+                if (sideIcon) sideIcon.className = "fa-solid fa-volume-xmark";
+                if (muteText) muteText.innerText = "MUTED";
+            } else {
+                if (muteIcon) muteIcon.className = "fa-solid fa-volume-high text-base";
+                if (sideIcon) sideIcon.className = "fa-solid fa-volume-high";
+                if (muteText) muteText.innerText = "SUARA";
+                speakText("Suara diaktifkan");
+            }
+        }
+
+        function updateTimerDisplay() {
+            const display = document.getElementById('timer-display');
+            if (!display) return;
+            const minutes = Math.floor(timerSeconds / 60);
+            const seconds = timerSeconds % 60;
+            display.innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            if (timerSeconds <= 60 && timerSeconds > 0) {
+                display.className = "font-black font-mono text-xl text-rose-600 animate-pulse";
+            } else {
+                display.className = "font-black font-mono text-xl text-slate-800";
+            }
+        }
+
+        function startSectionTimer() {
+            clearInterval(timerInterval);
+            timerSeconds = 600; // Reset ke 10 menit
+            isTimerRunning = true;
+            updateTimerDisplay();
+
+            const icon = document.getElementById('timer-play-icon');
+            if (icon) icon.className = "fa-solid fa-pause text-sm";
+
+            timerInterval = setInterval(() => {
+                if (timerSeconds > 0) {
+                    timerSeconds--;
+                    updateTimerDisplay();
+                } else {
+                    clearInterval(timerInterval);
+                    isTimerRunning = false;
+                    if (icon) icon.className = "fa-solid fa-play text-sm";
+                    speakText("Waktu 10 menit untuk bagian ini telah selesai!");
+                    alert("⏰ Waktu 10 Menit Telah Selesai!");
+                }
+            }, 1000);
+        }
+
+        function toggleSectionTimer() {
+            const icon = document.getElementById('timer-play-icon');
+            if (isTimerRunning) {
+                clearInterval(timerInterval);
+                isTimerRunning = false;
+                if (icon) icon.className = "fa-solid fa-play text-sm";
+            } else {
+                if (timerSeconds <= 0) timerSeconds = 600;
+                isTimerRunning = true;
+                if (icon) icon.className = "fa-solid fa-pause text-sm";
+                timerInterval = setInterval(() => {
+                    if (timerSeconds > 0) {
+                        timerSeconds--;
+                        updateTimerDisplay();
+                    } else {
+                        clearInterval(timerInterval);
+                        isTimerRunning = false;
+                        if (icon) icon.className = "fa-solid fa-play text-sm";
+                        speakText("Waktu 10 menit untuk bagian ini telah selesai!");
+                        alert("⏰ Waktu 10 Menit Telah Selesai!");
+                    }
+                }, 1000);
+            }
+        }
+
+        function resetSectionTimer() {
+            clearInterval(timerInterval);
+            isTimerRunning = false;
+            timerSeconds = 600;
+            updateTimerDisplay();
+            const icon = document.getElementById('timer-play-icon');
+            if (icon) icon.className = "fa-solid fa-play text-sm";
+        }
+
+        function handleSectionTimerVisibility(sectionNum) {
+            const widget = document.getElementById('section-timer-widget');
+            if (!widget) return;
+
+            // Timer aktif di Section 2 sampai 8
+            if (sectionNum >= 2 && sectionNum <= 8) {
+                widget.classList.remove('hidden');
+                startSectionTimer();
+            } else {
+                widget.classList.add('hidden');
+                clearInterval(timerInterval);
+                isTimerRunning = false;
+            }
+        }
+
+        // Navigation Functions
+        function goToSection(sectionNum) {
+            if (sectionNum < 1 || sectionNum > totalSections) return;
+            document.getElementById(`section-${currentSection}`).classList.add('hidden');
+            currentSection = sectionNum;
+            document.getElementById(`section-${currentSection}`).classList.remove('hidden');
+
+            // Handle hitung mundur 10 menit
+            handleSectionTimerVisibility(sectionNum);
+
+            // Update Section Label & Progress Bar
+            const labels = [
+                "1. Beranda", "2. Apersepsi", "3. Video Story", 
+                "4. Eja Kuman", "5. Kuis Huruf K", "6. Game Suku Kata", 
+                "7. Menggambar", "8. Selesai"
+            ];
+            document.getElementById('current-section-label').innerText = labels[currentSection - 1];
+            document.getElementById('progress-bar').style.width = `${(currentSection / totalSections) * 100}%`;
+
+            // If Section 7, Initialize Drawing Canvas
+            if (sectionNum === 7) {
+                setTimeout(initDrawingCanvas, 150);
+            }
+
+            // Update Nav Dots Styling
+            const dots = document.querySelectorAll('.nav-dot');
+            dots.forEach((dot, idx) => {
+                if (idx + 1 === currentSection) {
+                    dot.className = "nav-dot px-3 py-1 rounded-xl text-xs font-black bg-skyBlueDark text-white shrink-0 shadow-sm";
+                } else {
+                    dot.className = "nav-dot px-3 py-1 rounded-xl text-xs font-black bg-slate-100 text-slate-700 shrink-0";
+                }
+            });
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // DRAWING & COLORING MODULE (SECTION 8)
+        let drawCanvas, drawCtx, isPainting = false;
+        let currentColor = '#1E293B';
+        let currentLineWidth = 8;
+
+        function initDrawingCanvas() {
+            drawCanvas = document.getElementById('drawing-canvas');
+            if (!drawCanvas) return;
+
+            const rect = drawCanvas.parentElement.getBoundingClientRect();
+            drawCanvas.width = rect.width;
+            drawCanvas.height = rect.height;
+
+            drawCtx = drawCanvas.getContext('2d');
+            drawCtx.lineCap = 'round';
+            drawCtx.lineJoin = 'round';
+            drawCtx.strokeStyle = currentColor;
+            drawCtx.lineWidth = currentLineWidth;
+
+            drawCanvas.removeEventListener('pointerdown', startPainting);
+            drawCanvas.removeEventListener('pointermove', paint);
+            drawCanvas.removeEventListener('pointerup', stopPainting);
+            drawCanvas.removeEventListener('pointerleave', stopPainting);
+
+            drawCanvas.addEventListener('pointerdown', startPainting);
+            drawCanvas.addEventListener('pointermove', paint);
+            drawCanvas.addEventListener('pointerup', stopPainting);
+            drawCanvas.addEventListener('pointerleave', stopPainting);
+        }
+
+        function startPainting(e) {
+            isPainting = true;
+            drawCtx.beginPath();
+            const rect = drawCanvas.getBoundingClientRect();
+            drawCtx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+        }
+
+        function paint(e) {
+            if (!isPainting) return;
+            const rect = drawCanvas.getBoundingClientRect();
+            drawCtx.strokeStyle = currentColor;
+            drawCtx.lineWidth = currentLineWidth;
+            drawCtx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+            drawCtx.stroke();
+        }
+
+        function stopPainting() {
+            isPainting = false;
+        }
+
+        function setDrawingColor(colorHex) {
+            currentColor = colorHex;
+            speakText("Warna diganti");
+        }
+
+        function setBrushSize(size) {
+            currentLineWidth = size;
+            speakText("Ukuran kuas diubah");
+        }
+
+        function useEraser() {
+            currentColor = '#FFFFFF';
+            currentLineWidth = 28;
+            speakText("Penghapus aktif");
+        }
+
+        function clearDrawCanvas() {
+            if (drawCtx && drawCanvas) {
+                drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
+                speakText("Kanvas dibersihkan");
+            }
+        }
+
+        // FUNGSI UNTUK MEMUAT TEMPLATE HEWAN HITAM PUTIH KE ATAS KANVAS
+        function loadTemplateToCanvas(animal) {
+            if (!drawCanvas || !drawCtx) initDrawingCanvas();
+            clearDrawCanvas();
+
+            const w = drawCanvas.width;
+            const h = drawCanvas.height;
+            const cx = w / 2;
+            const cy = h / 2;
+
+            drawCtx.save();
+            drawCtx.strokeStyle = "#1E293B";
+            drawCtx.fillStyle = "#1E293B";
+            drawCtx.lineWidth = 5;
+            drawCtx.lineCap = 'round';
+            drawCtx.lineJoin = 'round';
+
+            if (animal === 'kucing') {
+                // Gambar Kucing Hitam Putih
+                drawCtx.beginPath();
+                drawCtx.arc(cx, cy, 80, 0, Math.PI * 2);
+                drawCtx.stroke();
+
+                // Telinga
+                drawCtx.beginPath();
+                drawCtx.moveTo(cx - 55, cy - 55);
+                drawCtx.lineTo(cx - 85, cy - 120);
+                drawCtx.lineTo(cx - 20, cy - 75);
+                drawCtx.stroke();
+
+                drawCtx.beginPath();
+                drawCtx.moveTo(cx + 55, cy - 55);
+                drawCtx.lineTo(cx + 85, cy - 120);
+                drawCtx.lineTo(cx + 20, cy - 75);
+                drawCtx.stroke();
+
+                // Mata
+                drawCtx.beginPath();
+                drawCtx.arc(cx - 30, cy - 15, 10, 0, Math.PI * 2);
+                drawCtx.arc(cx + 30, cy - 15, 10, 0, Math.PI * 2);
+                drawCtx.fill();
+
+                // Hidung & Mulut
+                drawCtx.beginPath();
+                drawCtx.moveTo(cx, cy + 10);
+                drawCtx.lineTo(cx - 12, cy + 25);
+                drawCtx.lineTo(cx + 12, cy + 25);
+                drawCtx.closePath();
+                drawCtx.fill();
+
+                drawCtx.beginPath();
+                drawCtx.arc(cx - 15, cy + 30, 15, 0, Math.PI);
+                drawCtx.arc(cx + 15, cy + 30, 15, 0, Math.PI);
+                drawCtx.stroke();
+
+                // Kumis
+                drawCtx.beginPath();
+                drawCtx.moveTo(cx - 80, cy + 10); drawCtx.lineTo(cx - 130, cy);
+                drawCtx.moveTo(cx - 80, cy + 25); drawCtx.lineTo(cx - 130, cy + 25);
+                drawCtx.moveTo(cx + 80, cy + 10); drawCtx.lineTo(cx + 130, cy);
+                drawCtx.moveTo(cx + 80, cy + 25); drawCtx.lineTo(cx + 130, cy + 25);
+                drawCtx.stroke();
+
+                speakText("Pola Kucing dimuat. Silakan mewarnai!");
+
+            } else if (animal === 'katak') {
+                // Gambar Katak Hitam Putih
+                drawCtx.beginPath();
+                drawCtx.arc(cx - 50, cy - 40, 35, 0, Math.PI * 2);
+                drawCtx.arc(cx + 50, cy - 40, 35, 0, Math.PI * 2);
+                drawCtx.stroke();
+
+                drawCtx.beginPath();
+                drawCtx.arc(cx - 50, cy - 40, 12, 0, Math.PI * 2);
+                drawCtx.arc(cx + 50, cy - 40, 12, 0, Math.PI * 2);
+                drawCtx.fill();
+
+                drawCtx.beginPath();
+                drawCtx.ellipse(cx, cy + 20, 100, 75, 0, 0, Math.PI * 2);
+                drawCtx.stroke();
+
+                drawCtx.beginPath();
+                drawCtx.arc(cx, cy + 20, 50, 0.2 * Math.PI, 0.8 * Math.PI);
+                drawCtx.stroke();
+
+                speakText("Pola Katak dimuat. Silakan mewarnai!");
+
+            } else if (animal === 'kipas') {
+                // Gambar Kipas Angin Hitam Putih
+                drawCtx.beginPath();
+                drawCtx.arc(cx, cy - 20, 80, 0, Math.PI * 2);
+                drawCtx.stroke();
+
+                drawCtx.beginPath();
+                drawCtx.arc(cx, cy - 20, 18, 0, Math.PI * 2);
+                drawCtx.fill();
+
+                drawCtx.beginPath();
+                drawCtx.ellipse(cx, cy - 60, 16, 32, 0, 0, Math.PI * 2);
+                drawCtx.ellipse(cx, cy + 20, 16, 32, 0, 0, Math.PI * 2);
+                drawCtx.ellipse(cx - 40, cy - 20, 32, 16, 0, 0, Math.PI * 2);
+                drawCtx.ellipse(cx + 40, cy - 20, 32, 16, 0, 0, Math.PI * 2);
+                drawCtx.stroke();
+
+                drawCtx.beginPath();
+                drawCtx.moveTo(cx, cy + 60);
+                drawCtx.lineTo(cx, cy + 110);
+                drawCtx.lineWidth = 10;
+                drawCtx.stroke();
+
+                drawCtx.beginPath();
+                drawCtx.moveTo(cx - 50, cy + 110);
+                drawCtx.lineTo(cx + 50, cy + 110);
+                drawCtx.lineWidth = 10;
+                drawCtx.stroke();
+
+                speakText("Pola Kipas dimuat. Silakan mewarnai!");
+
+            } else if (animal === 'kacamata') {
+                // Gambar Kacamata Hitam Putih
+                drawCtx.beginPath();
+                drawCtx.arc(cx - 70, cy, 45, 0, Math.PI * 2);
+                drawCtx.arc(cx + 70, cy, 45, 0, Math.PI * 2);
+                drawCtx.stroke();
+
+                drawCtx.beginPath();
+                drawCtx.arc(cx, cy - 10, 25, 0.2 * Math.PI, 0.8 * Math.PI);
+                drawCtx.lineWidth = 8;
+                drawCtx.stroke();
+
+                drawCtx.beginPath();
+                drawCtx.moveTo(cx - 115, cy - 10);
+                drawCtx.quadraticCurveTo(cx - 150, cy - 30, cx - 140, cy - 60);
+                drawCtx.moveTo(cx + 115, cy - 10);
+                drawCtx.quadraticCurveTo(cx + 150, cy - 30, cx + 140, cy - 60);
+                drawCtx.lineWidth = 6;
+                drawCtx.stroke();
+
+                speakText("Pola Kacamata dimuat. Silakan mewarnai!");
+            }
+
+            drawCtx.restore();
+            drawCtx.strokeStyle = currentColor;
+            drawCtx.lineWidth = currentLineWidth;
+        }
+
+        function presentStudentDrawing() {
+            const randomName = studentList[Math.floor(Math.random() * studentList.length)];
+            speakText(`Mari kita beri tepuk tangan untuk ${randomName}! Silakan ${randomName} maju dan ceritakan gambarmu!`);
+            pickRandomStudent();
+        }
+
+        function nextSection() { goToSection(currentSection + 1); }
+        function prevSection() { goToSection(currentSection - 1); }
+
+        // Header / Footer Auto Hide
+        function showHeader() {
+            clearTimeout(headerTimer);
+            document.getElementById('auto-header').style.transform = 'translateY(0)';
+        }
+
+        function scheduleHideHeader() {
+            if (isHeaderLocked) return;
+            headerTimer = setTimeout(() => {
+                document.getElementById('auto-header').style.transform = 'translateY(-100%)';
+            }, 2500);
+        }
+
+        function showFooter() {
+            clearTimeout(footerTimer);
+            document.getElementById('auto-footer').style.transform = 'translateY(0)';
+        }
+
+        function scheduleHideFooter() {
+            footerTimer = setTimeout(() => {
+                document.getElementById('auto-footer').style.transform = 'translateY(100%)';
+            }, 2500);
+        }
+
+        function toggleHeaderLock() {
+            isHeaderLocked = !isHeaderLocked;
+            const btn = document.getElementById('lock-header-btn');
+            const icon = document.getElementById('lock-header-icon');
+            if (isHeaderLocked) {
+                btn.className = "bg-rose-500 hover:bg-rose-600 text-white font-extrabold px-2.5 py-1 rounded-xl text-xs transition btn-3d shadow-sm";
+                icon.className = "fa-solid fa-lock";
+            } else {
+                btn.className = "bg-amber-400 hover:bg-amber-500 text-slate-900 font-extrabold px-2.5 py-1 rounded-xl text-xs transition btn-3d shadow-sm";
+                icon.className = "fa-solid fa-lock-open";
+            }
+        }
+
+        // Section 2: Apersepsi Questions & Answers Data
+        const apersepsiQuestionsData = [
+            {
+                q: "\"SIAPA YANG TAHU APA ITU KUMAN?\"",
+                a: "Kuman adalah makhluk hidup yang sangat kecil (mikroorganisme) yang tidak bisa dilihat mata langsung, yang bisa hinggap di tubuh dan membuat kita menjadi sakit!"
+            },
+            {
+                q: "\"DI MANA BIASANYA KUMAN BERSEMBUNYI?\"",
+                a: "Kuman bersembunyi di tempat-tempat kotor, gagang pintu, mainan, uang kertas/logam, dan terutama di telapak tangan atau kuku yang jarang dicuci!"
+            },
+            {
+                q: "\"APA YANG TERJADI JIKA KITA MAKAN TANPA CUCI TANGAN?\"",
+                a: "Kuman di tangan kotor akan menempel pada makanan, masuk ke dalam perut, dan membuat kita sakit perut, diare, atau muntah!"
+            },
+            {
+                q: "\"BAGAIMANA CARA MENCEGAH KUMAN MASUK KE TUBUH?\"",
+                a: "Dengan rajin mencuci tangan menggunakan sabun dan air bersih mengalir, terutama sebelum makan dan sesudah bermain!"
+            }
+        ];
+        let apersepsiIdx = 0;
+
+        function nextApersepsiQuestion() {
+            apersepsiIdx = (apersepsiIdx + 1) % apersepsiQuestionsData.length;
+            const item = apersepsiQuestionsData[apersepsiIdx];
+            document.getElementById('apersepsi-question').innerText = item.q;
+            document.getElementById('apersepsi-answer-text').innerText = item.a;
+            document.getElementById('apersepsi-hint').classList.add('hidden');
+            document.getElementById('apersepsi-answer-box').classList.add('hidden');
+            speakText(item.q);
+        }
+
+        function toggleApersepsiAnswer() {
+            const box = document.getElementById('apersepsi-answer-box');
+            box.classList.toggle('hidden');
+            if (!box.classList.contains('hidden')) {
+                const item = apersepsiQuestionsData[apersepsiIdx];
+                speakText(`Jawaban: ${item.a}`);
+            }
+        }
+
+        function toggleApersepsiHint() {
+            const hint = document.getElementById('apersepsi-hint');
+            hint.classList.toggle('hidden');
+            if (!hint.classList.contains('hidden')) {
+                speakText("Ayo acungkan tanganmu dan jawab dengan tegas!");
+            }
+        }
+
+        // Speech Synthesis Helper (TTS Bahasa Indonesia)
+        function speakText(text) {
+            if (isAudioMuted) return;
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'id-ID';
+                utterance.rate = 0.9;
+                utterance.pitch = 1.1;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function speakLetter(letter) {
+            speakText(`Huruf ${letter}`);
+        }
+
+        function spellTogether() {
+            speakText("K... U... M... A... N... KUMAN!");
+        }
+
+        function openWritingGuide() {
+            const box = document.getElementById('writing-guide-box');
+            box.classList.toggle('hidden');
+            if (!box.classList.contains('hidden')) {
+                speakText("Ayo latih menulis atau menebali kata KUMAN!");
+                setTimeout(initWritingStylusCanvas, 100);
+            }
+        }
+
+        // FUNGSI KHUSUS PANDUAN MENULIS KATA "KUMAN"
+        let writingCanvas, writingCtx, isWritingStylus = false;
+
+        function initWritingStylusCanvas() {
+            writingCanvas = document.getElementById('writing-stylus-canvas');
+            if (!writingCanvas) return;
+
+            const rect = writingCanvas.parentElement.getBoundingClientRect();
+            writingCanvas.width = rect.width;
+            writingCanvas.height = rect.height;
+
+            writingCtx = writingCanvas.getContext('2d');
+            writingCtx.lineCap = 'round';
+            writingCtx.lineJoin = 'round';
+            writingCtx.strokeStyle = '#0085FF';
+            writingCtx.lineWidth = 6;
+
+            // Pastikan event listener tidak tertumpuk
+            writingCanvas.onpointerdown = (e) => {
+                isWritingStylus = true;
+                writingCtx.beginPath();
+                const r = writingCanvas.getBoundingClientRect();
+                writingCtx.moveTo(e.clientX - r.left, e.clientY - r.top);
+            };
+
+            writingCanvas.onpointermove = (e) => {
+                if (!isWritingStylus) return;
+                const r = writingCanvas.getBoundingClientRect();
+                writingCtx.lineTo(e.clientX - r.left, e.clientY - r.top);
+                writingCtx.stroke();
+            };
+
+            const stopWriting = () => { isWritingStylus = false; };
+            writingCanvas.onpointerup = stopWriting;
+            writingCanvas.onpointerleave = stopWriting;
+        }
+
+        function clearWritingCanvasOnly() {
+            if (writingCtx && writingCanvas) {
+                writingCtx.clearRect(0, 0, writingCanvas.width, writingCanvas.height);
+            }
+            speakText("Coretan tulisan telah dibersihkan.");
+        }
+
+        function toggleWritingTemplate() {
+            const templateText = document.getElementById('writing-template-text');
+            if (templateText) {
+                templateText.classList.toggle('hidden');
+            }
+        }
+
+        function resetWritingCanvas() {
+            const templateText = document.getElementById('writing-template-text');
+            const hint = document.getElementById('click-to-write-hint');
+            if (templateText) templateText.classList.remove('hidden');
+            if (hint) hint.classList.remove('hidden');
+
+            clearWritingCanvasOnly();
+        }
+
+        // Section 3: Video Reflection Prompts & Answers
+        const videoPromptsData = [
+            {
+                prompt: "\"Anak-anak, cerita tentang apa video yang baru saja kita tonton bersama?\"",
+                answer: "Video ini menceritakan tentang kuman yang sangat kecil dan bisa membuat tubuh kita sakit seperti perut mules atau batuk jika kita jajan sembarangan atau lupa cuci tangan."
+            },
+            {
+                prompt: "\"Mengapa anak di dalam cerita bisa mengalami sakit perut atau batuk?\"",
+                answer: "Karena anak di dalam cerita makan menggunakan tangan yang kotor dan tidak mencuci tangan pakai sabun, sehingga kuman ikut masuk ke dalam perut."
+            },
+            {
+                prompt: "\"Apa yang terjadi jika kita bersin atau batuk tanpa menutup mulut?\"",
+                answer: "Kuman akan terbang dan berhamburan di udara, lalu berpindah menulari teman atau keluarga di dekat kita!"
+            },
+            {
+                prompt: "\"Bagaimana cara paling ampuh membasmi kuman di tangan kita?\"",
+                answer: "Mencuci tangan dengan sabun dan air bersih yang mengalir selama 20 detik!"
+            }
+        ];
+        let videoPromptIdx = 0;
+
+        function nextVideoPrompt() {
+            videoPromptIdx = (videoPromptIdx + 1) % videoPromptsData.length;
+            const currentObj = videoPromptsData[videoPromptIdx];
+            
+            document.getElementById('video-prompt-text').innerText = currentObj.prompt;
+            document.getElementById('video-answer-text').innerText = currentObj.answer;
+            document.getElementById('video-answer-box').classList.add('hidden');
+            
+            speakText(currentObj.prompt);
+        }
+
+        function toggleVideoAnswer() {
+            const ansBox = document.getElementById('video-answer-box');
+            ansBox.classList.toggle('hidden');
+            if (!ansBox.classList.contains('hidden')) {
+                const currentObj = videoPromptsData[videoPromptIdx];
+                speakText(`Jawaban: ${currentObj.answer}`);
+            }
+        }
+
+        // Section 5: Quiz Data & Functions
+        const quizQuestions = [
+            { q: "HEWAN APA YANG SUKA MEONG?", options: ["KUCING", "KUDA", "KATAK"], correct: 0, img: "🐱" },
+            { q: "HEWAN APA YANG BISA LARI SANGAT CANGGIH & KENCANG?", options: ["KELINCI", "KUDA", "KAMBING"], correct: 1, img: "🐎" },
+            { q: "HEWAN APA YANG SUKA MELOMPAT DI AIR?", options: ["KATAK", "KUPU-KUPU", "KERA"], correct: 0, img: "🐸" },
+            { q: "HEWAN APA YANG SUKA MAKAN WORTEL?", options: ["KELINCI", "KECULI", "KANGURU"], correct: 0, img: "🐰" },
+            { q: "BENDA UNTUK MENUTUP KEPALA DARI PANAS?", options: ["TOPI", "KAPAS", "KACAMATA"], correct: 0, img: "🧢" },
+            { q: "BENDA UNTUK MEMOTONG KERTAS?", options: ["PENSIL", "GUNTING", "KARET"], correct: 1, img: "✂️" },
+            { q: "ALAT UNTUK MENGUSIR PANAS & ANGIN SEGAR?", options: ["KIPAS", "KOMPOR", "KULKAS"], correct: 0, img: "🌀" },
+            { q: "BENDA TEMPAT MENYIMPAN ES AGAR DINGIN?", options: ["KULKAS", "KAPAL", "KASUR"], correct: 0, img: "🧊" }
+        ];
+        let quizIdx = 0;
+        let quizScore = 0;
+
+        function renderQuizQuestion() {
+            const item = quizQuestions[quizIdx];
+            document.getElementById('quiz-question-number').innerText = `Soal ${quizIdx + 1} dari ${quizQuestions.length}`;
+            document.getElementById('quiz-question-text').innerText = `"${item.q}"`;
+            
+            const container = document.getElementById('quiz-options-container');
+            container.innerHTML = '';
+
+            item.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "bg-white border-2 border-sky-200 hover:border-skyBlueDark p-4 rounded-2xl text-xl font-black text-slate-800 shadow-sm transition btn-3d flex items-center justify-center gap-2";
+                btn.innerHTML = `<span>${opt}</span>`;
+                btn.onclick = () => checkQuizAnswer(idx);
+                container.appendChild(btn);
+            });
+
+            document.getElementById('quiz-feedback').className = "hidden";
+            speakText(item.q);
+        }
+
+        function checkQuizAnswer(selectedIdx) {
+            const item = quizQuestions[quizIdx];
+            const feedback = document.getElementById('quiz-feedback');
+            feedback.classList.remove('hidden');
+
+            if (selectedIdx === item.correct) {
+                quizScore += 10;
+                document.getElementById('quiz-score').innerText = quizScore;
+                feedback.className = "text-center text-xl font-black p-3 rounded-xl bg-emerald-100 text-emerald-800 border-2 border-emerald-400";
+                feedback.innerText = "HEBAT! JAWABANMU BENAR! 🎉";
+                speakText("Hore! Jawabannya Benar!");
+            } else {
+                feedback.className = "text-center text-xl font-black p-3 rounded-xl bg-rose-100 text-rose-800 border-2 border-rose-400";
+                feedback.innerText = "Ayo Coba Lagi, Kamu Pasti Bisa! 💪";
+                speakText("Ayo Coba Lagi!");
+            }
+        }
+
+        function revealQuizAnswer() {
+            const item = quizQuestions[quizIdx];
+            const feedback = document.getElementById('quiz-feedback');
+            feedback.classList.remove('hidden');
+            feedback.className = "text-center text-xl font-black p-3 rounded-xl bg-amber-100 text-amber-900 border-2 border-amber-400";
+            feedback.innerText = `KUNCI JAWABAN: ${item.options[item.correct]} ${item.img}`;
+            speakText(`Kunci jawabannya adalah ${item.options[item.correct]}`);
+        }
+
+        function nextQuizQuestion() {
+            quizIdx = (quizIdx + 1) % quizQuestions.length;
+            renderQuizQuestion();
+        }
+
+        function resetQuizGame() {
+            quizIdx = 0;
+            quizScore = 0;
+            document.getElementById('quiz-score').innerText = "0";
+            renderQuizQuestion();
+        }
+
+        // Section 6: Syllable Game Data & Logic
+        const syllableWords = [
+            { target: "KUCING", syllables: ["KU", "CING"], distractors: ["MA", "BA"], img: "https://placehold.co/300x300/00C9FF/FFFFFF?text=KUCING" },
+            { target: "KUDA", syllables: ["KU", "DA"], distractors: ["LA", "CA"], img: "https://placehold.co/300x300/0085FF/FFFFFF?text=KUDA" },
+            { target: "KATAK", syllables: ["KA", "TAK"], distractors: ["TI", "PI"], img: "https://placehold.co/300x300/00E676/FFFFFF?text=KATAK" },
+            { target: "KELINCI", syllables: ["KE", "LIN", "CI"], distractors: ["BU", "PA"], img: "https://placehold.co/300x300/FFB800/FFFFFF?text=KELINCI" }
+        ];
+        let syllableIdx = 0;
+        let selectedSyllables = [];
+
+        function renderSyllableGame() {
+            const currentObj = syllableWords[syllableIdx];
+            document.getElementById('syllable-image').src = currentObj.img;
+            document.getElementById('syllable-target-label').innerText = `Susun Kata: ${currentObj.target}`;
+            
+            selectedSyllables = [];
+            updateSyllableSlots();
+
+            let pool = [...currentObj.syllables, ...currentObj.distractors];
+            pool.sort(() => Math.random() - 0.5);
+
+            const optionsContainer = document.getElementById('syllable-options');
+            optionsContainer.innerHTML = '';
+
+            pool.forEach(syl => {
+                const btn = document.createElement('button');
+                btn.className = "bg-sky-100 hover:bg-sky-200 border-2 border-skyCyan text-skyBlueDark text-2xl font-black px-6 py-3 rounded-2xl shadow-sm btn-3d";
+                btn.innerText = syl;
+                btn.onclick = () => addSyllable(syl);
+                optionsContainer.appendChild(btn);
+            });
+
+            document.getElementById('syllable-feedback').className = "hidden";
+            speakText(`Susun kata ${currentObj.target}`);
+        }
+
+        function addSyllable(syl) {
+            const currentObj = syllableWords[syllableIdx];
+            if (selectedSyllables.length < currentObj.syllables.length) {
+                selectedSyllables.push(syl);
+                updateSyllableSlots();
+                speakText(syl);
+
+                if (selectedSyllables.length === currentObj.syllables.length) {
+                    checkSyllablesResult();
+                }
+            }
+        }
+
+        function updateSyllableSlots() {
+            const currentObj = syllableWords[syllableIdx];
+            const slotsContainer = document.getElementById('syllable-slots');
+            slotsContainer.innerHTML = '';
+
+            for (let i = 0; i < currentObj.syllables.length; i++) {
+                const slot = document.createElement('div');
+                slot.className = "w-20 h-14 bg-white border-2 border-dashed border-skyCyan rounded-xl flex items-center justify-center text-xl font-black text-slate-800 shadow-inner";
+                slot.innerText = selectedSyllables[i] || "";
+                slotsContainer.appendChild(slot);
+            }
+        }
+
+        function checkSyllablesResult() {
+            const currentObj = syllableWords[syllableIdx];
+            const assembled = selectedSyllables.join('');
+            const feedback = document.getElementById('syllable-feedback');
+            feedback.classList.remove('hidden');
+
+            if (assembled === currentObj.target) {
+                feedback.className = "text-center text-xl font-black p-3 rounded-xl bg-emerald-100 text-emerald-800 border-2 border-emerald-400";
+                feedback.innerText = `LUBER HABIS! BISA TERSUSUN: ${currentObj.target} 🌟`;
+                speakText(`Hebat! Kata ${currentObj.target} berhasil disusun!`);
+            } else {
+                feedback.className = "text-center text-xl font-black p-3 rounded-xl bg-rose-100 text-rose-800 border-2 border-rose-400";
+                feedback.innerText = "Belum pas, ayo hapus dan susun ulang!";
+                speakText("Belum pas, ayo coba lagi!");
+            }
+        }
+
+        function clearSyllables() {
+            selectedSyllables = [];
+            updateSyllableSlots();
+            document.getElementById('syllable-feedback').className = "hidden";
+        }
+
+        function nextSyllableWord() {
+            syllableIdx = (syllableIdx + 1) % syllableWords.length;
+            renderSyllableGame();
+        }
+
+        // Section 7: Hand Wash Virtual Simulator
+        let cleanProgress = 0;
+
+        function addSoap() {
+            speakText("Tuangkan sabun dan gosok sela-sela jarimu!");
+            cleanProgress = Math.min(cleanProgress + 15, 100);
+            updateHandWashUI();
+        }
+
+        function cleanGerms(e) {
+            if (e.buttons === 1) {
+                cleanProgress = Math.min(cleanProgress + 1.5, 100);
+                updateHandWashUI();
+            }
+        }
+
+        function cleanGermsTouch(e) {
+            cleanProgress = Math.min(cleanProgress + 2, 100);
+            updateHandWashUI();
+        }
+
+        function updateHandWashUI() {
+            document.getElementById('clean-percentage').innerText = `${Math.floor(cleanProgress)}%`;
+            const overlay = document.getElementById('germ-overlay');
+            overlay.style.opacity = (100 - cleanProgress) / 100;
+
+            if (cleanProgress >= 100) {
+                speakText("Hore! Tanganmu sudah bersih dan bebas kuman!");
+            }
+        }
+
+        function resetHandWash() {
+            cleanProgress = 0;
+            updateHandWashUI();
+        }
+
+        // Teacher & Random Picker Modals
+        function pickRandomStudent() {
+            const modal = document.getElementById('student-modal');
+            modal.classList.remove('hidden');
+            
+            const randomName = studentList[Math.floor(Math.random() * studentList.length)];
+            document.getElementById('random-student-name').innerText = randomName;
+            speakText(`Giliran ${randomName} untuk menjawab!`);
+        }
+
+        function closeStudentModal() {
+            document.getElementById('student-modal').classList.add('hidden');
+        }
+
+        function showObjectiveModal() {
+            document.getElementById('objective-modal').classList.remove('hidden');
+        }
+
+        function closeObjectiveModal() {
+            document.getElementById('objective-modal').classList.add('hidden');
+        }
+
+        function toggleTeacherPanel() {
+            const panel = document.getElementById('teacher-panel');
+            panel.classList.toggle('translate-x-full');
+        }
+
+        function updateTeacherName(val) {
+            document.querySelector('#section-1 h2').innerText = val.toUpperCase();
+        }
+
+        function updateStudentList(val) {
+            studentList = val.split(',').map(s => s.trim()).filter(s => s.length > 0);
+        }
+
+        function resetAllProgress() {
+            resetQuizGame();
+            clearSyllables();
+            resetHandWash();
+            alert("Seluruh progress dan skor kelas telah di-reset!");
+        }
+
+        function uploadTeacherPhoto(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    document.getElementById('teacher-photo').src = evt.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // 3D Germ Visualizer Modal Logic (Three.js)
+        let germScene, germCamera, germRenderer, germMesh;
+
+        function showGermModal() {
+            document.getElementById('germ-modal').classList.remove('hidden');
+            if (!germRenderer) {
+                init3DGerm();
+            }
+        }
+
+        function closeGermModal() {
+            document.getElementById('germ-modal').classList.add('hidden');
+        }
+
+        function init3DGerm() {
+            const container = document.getElementById('three-germ-container');
+            germScene = new THREE.Scene();
+            germCamera = new THREE.PerspectiveCamera(50, container.clientWidth / container.clientHeight, 0.1, 1000);
+            
+            germRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            germRenderer.setSize(container.clientWidth, container.clientHeight);
+            container.appendChild(germRenderer.domElement);
+
+            const geometry = new THREE.IcosahedronGeometry(2, 2);
+            const material = new THREE.MeshPhongMaterial({
+                color: 0x00E676,
+                wireframe: false,
+                flatShading: true
+            });
+
+            germMesh = new THREE.Mesh(geometry, material);
+            germScene.add(germMesh);
+
+            const light = new THREE.DirectionalLight(0xffffff, 1);
+            light.position.set(5, 5, 5).normalize();
+            germScene.add(light);
+
+            const ambientLight = new THREE.AmbientLight(0x404040);
+            germScene.add(ambientLight);
+
+            germCamera.position.z = 6;
+
+            function animateGerm() {
+                requestAnimationFrame(animateGerm);
+                if (germMesh) {
+                    germMesh.rotation.x += 0.01;
+                    germMesh.rotation.y += 0.01;
+                }
+                germRenderer.render(germScene, germCamera);
+            }
+            animateGerm();
+        }
+
+        // Initial Load Event
+        window.onload = function() {
+            renderQuizQuestion();
+            renderSyllableGame();
+            scheduleHideHeader();
+            scheduleHideFooter();
+            
+            window.addEventListener('resize', () => {
+                if (drawCanvas && currentSection === 7) {
+                    initDrawingCanvas();
+                }
+            });
+        };
+    </script>
+</body>
+</html>
